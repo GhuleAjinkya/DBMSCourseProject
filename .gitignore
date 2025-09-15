@@ -1,3 +1,6 @@
 env/
 refs/
-logs/**
+
+# dont push contents of logs, just the logs folder
+logs/*
+!logs/.gitkeep
