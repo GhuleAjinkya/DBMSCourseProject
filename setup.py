@@ -82,6 +82,7 @@ def databaseSetup():
     LogTime timestamp default current_timestamp,
     Description text);'''
 
+    cursor.execute("begin;")
     try: 
         cursor.execute(createDBQuery)
         cursor.execute(useDBQuery)
@@ -90,8 +91,10 @@ def databaseSetup():
             cursor.execute(desc)
             print(f"Created table: {table}")
         logger.info("Table creation complete")
+        cursor.execute("commit;")
     except mysql.connector.Error as err:
         logger.error(err.msg)
+        cursor.execute("rollback;")
 
 
 if __name__ == '__main__':
