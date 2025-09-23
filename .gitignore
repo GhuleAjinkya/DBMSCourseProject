@@ -1,6 +1,6 @@
 env/
 refs/
-
+__pycache__/
 # dont push contents of logs, just the logs folder
 logs/*
 !logs/.gitkeep
