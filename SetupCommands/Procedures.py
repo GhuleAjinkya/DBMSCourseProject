@@ -6,13 +6,21 @@ delimiter $$
 create procedure TransferAmount (SenderID int, ReceiverID int, amount decimal(15,2), pause int)
 begin
 declare senderBalance decimal(15,2);
+declare receiverBalance decimal(15,2);
 declare lastTxnID int;
 insert into transaction (transactiontype, senderid, receiverid, status)
 values ('Transfer',senderid, receiverid, 'Processing');
 set lastTxnID = last_insert_id();
 start transaction;
+if SenderID < ReceiverID then 
 select Balance into senderBalance from Account where AccountID = SenderID for update;
-if pause > 0 then Do sleep(20);
+select Balance into receiverBalance from Account where AccountID = ReceiverID for update;
+else 
+select Balance into receiverBalance from Account where AccountID = ReceiverID for update;
+select Balance into senderBalance from Account where AccountID = SenderID for update;
+end if;
+if pause > 0 then 
+Do sleep(5); 
 end if;
 if senderBalance < amount then rollback;
 signal sqlstate '45000' set message_text = 'Insufficient balance';
