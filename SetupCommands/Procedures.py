@@ -24,13 +24,12 @@ Do sleep(5);
 end if;
 if senderBalance < amount then rollback;
 signal sqlstate '45000' set message_text = 'Insufficient balance';
-update transaction set status = 'Failed' where TransactionID = lastTxnID
-order by TransactionID desc limit 1;
+update transaction set status = 'Failed' where TransactionID = lastTxnID;
 else 
 update account set Balance = Balance - amount where AccountID = senderID;
 update account set Balance = Balance + amount where AccountID = receiverID;
-update transaction set status = 'Completed', CompletedAt = current_timestamp where TransactionID = lastTxnID
-order by TransactionID desc limit 1;
+update transaction set status = 'Completed', 
+CompletedAt = current_timestamp where TransactionID = lastTxnID;
 commit;
 end if;
 end;
