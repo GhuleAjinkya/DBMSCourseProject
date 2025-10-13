@@ -17,8 +17,8 @@ def databaseSetup():
     logger.info("Setting up database structure")
     db = mysql.connector.connect(user='root',password='Ajinkya!1')
     cursor = db.cursor()
-
-    createDBQuery = "create database if not exists bank;"
+    cursor.execute("drop database bank;")
+    createDBQuery = "create database bank;"
     useDBQuery = "use bank;"
 
     try: 
@@ -42,8 +42,12 @@ def databaseSetup():
 
     except mysql.connector.Error as err:
         logger.error(err.msg)
+    
+    tmp = demo.ACIDDemo()
+    tmp.demo_isolation_deadlock()
+    #demo.ACIDDemo.runMenu() # start demo
 
-    demo.simulateTransfer() # temp demo call
+
 
 if __name__ == '__main__':
     main()
