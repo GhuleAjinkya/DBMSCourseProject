@@ -12,5 +12,7 @@ set global innodb_file_per_table = 1;
 Globals['eventScheduler'] = '''
 set global event_scheduler = 1;
 '''
-
+Globals['transactionLevel'] = '''
+set global transaction isolation level serializable;
+'''
 
