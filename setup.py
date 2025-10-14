@@ -35,26 +35,22 @@ def databaseSetup():
             cursor.execute(desc)
         logger.info("Temp data inserted")
 
-        for procedure in Procedures:
-            desc = Procedures[procedure]
-            cursor.execute(desc)
-        logger.info("Procedures created")
-
         for setting in Globals:
             desc = Globals[setting]
             cursor.execute(desc)
         logger.info("InnoDB settings changed")
 
+        for procedure in Procedures:
+            desc = Procedures[procedure]
+            cursor.execute(desc)
+        logger.info("Procedures created")
+
+
     except mysql.connector.Error as err:
         logger.error(err.msg)
     
     tmp = demo.ACIDDemo()
-    tmp.demo_isolation_deadlock()
-    #demo.atomicityDemo()
-    #demo.ACIDDemo.runMenu() # start demo
-    close = input("input to exit")
-
-
+    tmp.runMenu()
 
 if __name__ == '__main__':
     main()

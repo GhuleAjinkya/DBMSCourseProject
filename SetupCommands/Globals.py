@@ -1,18 +1,18 @@
 Globals = {}
 
-Globals['logEveryCommit'] = '''
+Globals["logEveryCommit"] = '''
 set global innodb_flush_log_at_trx_commit = 1;
 '''
-Globals['syncLogsAfterCommit'] = '''
+
+Globals["syncLogsAfterCommit"] = '''
 set global sync_binlog = 1;
 '''
-Globals['seperateTableData'] = '''
+
+Globals["seperateTableData"] = '''
 set global innodb_file_per_table = 1;
 '''
-Globals['eventScheduler'] = '''
-set global event_scheduler = 1;
-'''
-Globals['transactionLevel'] = '''
+
+Globals["transactionLevel"] = '''
 set global transaction isolation level serializable;
 '''
 

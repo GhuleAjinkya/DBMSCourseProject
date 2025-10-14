@@ -38,15 +38,6 @@ foreign key (SenderID) references Account(AccountID),
 foreign key (ReceiverID) references Account(AccountID),
 check (CompletedAt is null or CompletedAt >= InitiatedAt));'''
 
-Tables["Deadlock"] = ''' Create table if not exists Deadlock (
-DeadlockID int auto_increment primary key,
-VictimID int not null,
-ResolutionAction enum('Rollback','Timeout','Manual'),
-DetectedAt timestamp default current_timestamp,
-ResolvedAt timestamp,
-Foreign key (VictimID) references Transaction(TransactionID),
-check (ResolvedAt is null or ResolvedAt >= DetectedAt));'''
-
 Tables["Log"] = ''' Create table if not exists Log (
 LogID int auto_increment primary key,
 ActionType varchar(50) not null,

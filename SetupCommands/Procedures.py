@@ -7,7 +7,19 @@ create procedure TransferAmount (SenderID int, ReceiverID int, amount decimal(15
 begin
 declare senderBalance decimal(15,2);
 declare receiverBalance decimal(15,2);
+declare senderExists int;
+declare receiverExists int;
 declare lastTxnID int;
+if amount <= 0 then signal sqlstate '45000' set message_text = 'Amount must be positive';
+end if;
+if SenderID = ReceiverID then signal sqlstate '45000' set message_text = 'Cannot transfer to same account';
+end if;
+select count(*) into senderExists from Account where AccountID = senderID;
+if senderExists = 0 then signal sqlstate '45000' set message_text = 'Sender account doesnt exists';
+end if;
+select count(*) into receiverExists from Account where AccountID = receiverID;
+if receiverExists = 0 then signal sqlstate '45000' set message_text = 'Receiver account doesnt exists';
+end if;
 insert into transaction (transactiontype, senderid, receiverid, status)
 values ('Transfer',senderid, receiverid, 'Processing');
 set lastTxnID = last_insert_id();
