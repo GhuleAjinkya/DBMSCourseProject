@@ -16,3 +16,7 @@ Globals["transactionLevel"] = '''
 set global transaction isolation level serializable;
 '''
 
+Globals['eventScheduler'] = '''
+set global event_scheduler = 1;
+'''
+

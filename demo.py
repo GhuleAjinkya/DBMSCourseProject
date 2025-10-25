@@ -22,7 +22,7 @@ class ACIDDemo:
                 conn = self.get_connection()
                 cursor = conn.cursor()
                 print("T1: Starting transfer 1→2 with delay...")
-                cursor.callproc("TransferAmount", [1, 2, 500, 1]) 
+                cursor.callproc("TransferAmount", [1, 2, 500, 0]) 
                 conn.commit()
                 results['t1'] = 'SUCCESS'
             except Exception as e:
@@ -72,7 +72,6 @@ class ACIDDemo:
         logger.info(f"Total before transaction: {total_before}, Total after: {total_after}")
         
     def atomicityDemo(self):
-        # add user input validation
         Acc1 = int(input("Enter creditor account ID: "))
         Acc2 = int(input("Enter debtor account ID: "))
         amount = int(input("Enter amount to transfer: "))

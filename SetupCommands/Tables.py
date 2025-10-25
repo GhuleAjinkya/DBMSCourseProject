@@ -23,6 +23,7 @@ AccountID int auto_increment primary key,
 AccountType int not null,
 CustomerID int not null,
 Balance decimal(15,2) not null default 0.00,
+UpdatedAt timestamp,
 foreign key (AccountType) references accounttype(typeID),
 foreign key (CustomerID) references Customer(CustomerID)); '''
 
@@ -32,6 +33,7 @@ TransactionType enum('Transfer', 'Deposit', 'Withdrawal', 'Fee', 'Interest') not
 SenderID int not null,
 ReceiverID int,
 Status enum('Processing', 'Completed', 'Failed'),
+Amount decimal(15,2),
 InitiatedAt timestamp default current_timestamp,
 CompletedAt timestamp,
 foreign key (SenderID) references Account(AccountID),
