@@ -4,3 +4,5 @@ __pycache__/
 # dont push contents of logs, just the logs folder
 logs/*
 !logs/.gitkeep
+todo.txt
+SetupCommands/__pycache__/

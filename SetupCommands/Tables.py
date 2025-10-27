@@ -23,6 +23,7 @@ AccountID int auto_increment primary key,
 AccountType int not null,
 CustomerID int not null,
 Balance decimal(15,2) not null default 0.00,
+UpdatedAt timestamp,
 foreign key (AccountType) references accounttype(typeID),
 foreign key (CustomerID) references Customer(CustomerID)); '''
 
@@ -32,23 +33,23 @@ TransactionType enum('Transfer', 'Deposit', 'Withdrawal', 'Fee', 'Interest') not
 SenderID int not null,
 ReceiverID int,
 Status enum('Processing', 'Completed', 'Failed'),
+Amount decimal(15,2),
 InitiatedAt timestamp default current_timestamp,
 CompletedAt timestamp,
 foreign key (SenderID) references Account(AccountID),
 foreign key (ReceiverID) references Account(AccountID),
 check (CompletedAt is null or CompletedAt >= InitiatedAt));'''
 
-Tables["Deadlock"] = ''' Create table if not exists Deadlock (
-DeadlockID int auto_increment primary key,
-VictimID int not null,
-ResolutionAction enum('Rollback','Timeout','Manual'),
-DetectedAt timestamp default current_timestamp,
-ResolvedAt timestamp,
-Foreign key (VictimID) references Transaction(TransactionID),
-check (ResolvedAt is null or ResolvedAt >= DetectedAt));'''
-
 Tables["Log"] = ''' Create table if not exists Log (
 LogID int auto_increment primary key,
 ActionType varchar(50) not null,
 LogTime timestamp default current_timestamp,
 Description text);'''
+
+Tables["Retries"] = '''
+create table if not exists RetriedTransactions (
+RetryID int auto_increment primary key,
+TransactionID int not null,
+RetriedAt timestamp default current_timestamp,
+foreign key (TransactionID) references Transaction(TransactionID));
+'''

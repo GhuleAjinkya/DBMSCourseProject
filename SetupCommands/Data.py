@@ -15,7 +15,5 @@ insert into AccountType (TypeName, MinBalance, OverdraftLimit, InterestRate) val
 Data["Account"] = '''
 insert into Account (AccountType, CustomerID, Balance) values
 (1, 1, 15000.00), 
-(2, 2, 5000.00),
-(1,1,2000),
-(2,2,3000);
+(2, 2, 5000.00);
 '''
