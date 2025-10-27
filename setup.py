@@ -57,11 +57,6 @@ def databaseSetup():
             cursor.execute(desc)
         logger.info("Events created")
 
-        
-
-        
-
-
     except mysql.connector.Error as err:
         logger.error(err.msg)
     

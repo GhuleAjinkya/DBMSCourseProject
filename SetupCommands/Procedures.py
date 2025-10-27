@@ -59,11 +59,45 @@ CompletedAt = current_timestamp where TransactionID = lastTxnID;
 commit;
 end if;
 
-if IS_USED_LOCK(senderLockName) then do RELEASE_LOCK(senderLockName); 
+if IS_USED_LOCK(senderLockName) is not null then do RELEASE_LOCK(senderLockName); 
 end if;
-if IS_USED_LOCK(receiverLockName) then do RELEASE_LOCK(receiverLockName); 
+if IS_USED_LOCK(receiverLockName) is not null then do RELEASE_LOCK(receiverLockName); 
 end if;
 end;
+$$
+delimiter ;
+'''
+
+Procedures["retry"] = '''
+delimiter $$
+create procedure RetryTransfer (SenderID int, ReceiverID int, Amount int, trxID int)
+begin
+    declare senderBalance int;
+    declare lastTxnID int;
+    insert into transaction (transactiontype, senderid, receiverid, status, Amount)
+    values ('Transfer',senderid, receiverid, 'Processing', amount);
+    set lastTxnID = last_insert_id();
+
+    start transaction;
+    if SenderID < ReceiverID then 
+        select Balance into senderBalance from Account where AccountID = SenderID for update;
+        select Balance from Account where AccountID = ReceiverID for update;
+    else 
+        select Balance from Account where AccountID = ReceiverID for update;
+        select Balance into senderBalance from Account where AccountID = SenderID for update;
+    end if;
+    if senderBalance < amount then
+        update transaction set status = 'Failed' where TransactionID = lastTxnID;
+        commit;
+    else 
+        update account set Balance = Balance - amount where AccountID = senderID;
+        update account set Balance = Balance + amount where AccountID = receiverID;
+        update transaction set status = 'Completed', CompletedAt = current_timestamp 
+        where TransactionID = lastTxnID;
+        commit;
+    end if;
+    insert into RetriedTransactions (TransactionID) values (trxID);
+end ;
 $$
 delimiter ;
 '''

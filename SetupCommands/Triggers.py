@@ -1,4 +1,4 @@
-# add trigger to set last update field in Account table and manage processing in txn table
+# add trigger to set last update field in Account table
 Triggers = {}
 
 Triggers["UpdateAccAfterTxn"] = '''create trigger accUpdate after update on transaction for each row

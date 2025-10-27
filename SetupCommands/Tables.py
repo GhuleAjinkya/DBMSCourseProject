@@ -45,3 +45,11 @@ LogID int auto_increment primary key,
 ActionType varchar(50) not null,
 LogTime timestamp default current_timestamp,
 Description text);'''
+
+Tables["Retries"] = '''
+create table if not exists RetriedTransactions (
+RetryID int auto_increment primary key,
+TransactionID int not null,
+RetriedAt timestamp default current_timestamp,
+foreign key (TransactionID) references Transaction(TransactionID));
+'''

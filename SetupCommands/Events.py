@@ -29,5 +29,33 @@ Events["RetryProcessing"] = '''
 delimiter $$
 create event RetryTxnStuckAtProcessing on schedule every 30 second do
 begin
+declare txnID int;
+declare sID int;
+declare rID int;
+declare amt int;
+declare senderLockName varchar(50);
+declare receiverLockName varchar(50);
+declare done int;
+declare txnCursor cursor for
+    select TransactionID, SenderID, ReceiverID, Amount from Transaction 
+        where status = 'Processing' and 
+        InitiatedAt <= now() - interval 30 second;
 
+declare continue handler for not found set done = 1;
+open txnCursor;
+retry_loop: loop
+    fetch txnCursor into txnID, sID, rID, amt;
+    if done = 1 then leave retry_loop; 
+    end if;
+    set senderLockName = concat('account_', sID);
+    set receiverLockName = concat('account_', rID);
+    if IS_FREE_LOCK(senderLockName) = 1 and IS_FREE_LOCK(receiverLockName) = 1 then
+        update Transaction set status = 'Failed' where TransactionID = txnID;
+        call retryTransfer(sID,rID,amt,txnID);
+    end if;
+end loop;
+close txnCursor;
+end ;
+$$
+delimiter ;
 '''
